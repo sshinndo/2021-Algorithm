@@ -23,10 +23,20 @@ int h(int key){
 	return key % M ;
 }
 
-int getNextBucketLinear(int v, int i){
-	
-	return (v + i) % M;
+int h2(int key){
+	return 11 - (key % 11) ;
 }
+int getNextBucketLinear(int v, int i){
+	return (v + i) % M;
+} // 단일 해싱
+
+int getNextBucketQuadratic(int v, int i){
+	return (v + i * i) % M; // 1차 군집화를 피하기 위해 * i
+} // 이중 해싱
+
+int getNextBucketDouble(int v, int i, int key){
+	return (v + i * h2(key)) % M; 
+} // 더블 해싱
 
 int isEmpty(HashType* HT, int b){
 	return HT->A[b].key == 0;
@@ -39,7 +49,10 @@ void insertItem(HashType* HT, int key){
 	
 	while(i < M){
 		count++;
-		int b = getNextBucketLinear(v, i);
+		int b = getNextBucketLinear(v, i); // 단일 해싱
+		// int b = getNextBucketQuadratic(v, i); // 이중 해싱
+		// int b = getNextBucketDouble(v, i, key); // 더블 해싱
+
 		if(isEmpty(HT, b)){
 			HT->A[b].key = key;
 			HT->A[b].probeCount = count;
